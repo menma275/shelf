@@ -26,11 +26,30 @@ import LinkCard from "@/components/linkCard";
 
 export default function Home() {
   const {data:session} = useSession()
-  const [userId, setUserId] = useState(null)
+  const [userId, setUserId] = useState<number | null>(null);
   const [isNewUser, setIsNewUser] = useState(false)
 
-  const [links, setLinks] = useState([])
-  const [tags, setTags] = useState([])
+  type Link = {
+    id: number;
+    url: string;
+    title: string;
+    content: string | null;
+    favicon: string | null;
+    img: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    authorId: number | null;
+  };
+  const [links, setLinks] = useState<Link[]>([]);
+  type Tag = {
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    authorId: number | null;
+  };
+
+const [tags, setTags] = useState<Tag[]>([]);
 
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
@@ -68,19 +87,19 @@ export default function Home() {
 
   // ユーザー情報の取得
   const fetchUser = async () => {
-    if(session) {
-      // データベースにuserが存在するか確認
-      const user = await getUser(session.user.email)
-      if(!user){
-        // データベースに存在しない場合、Googleアカウントの情報から新規作成
-        const newUser = await createUser(session.user.email, session.user.name)
-        setUserId(newUser.id)
-        setIsNewUser(true)
-      }else{
-        setUserId(user.id)
-      }
+  if (session && session.user && session.user.email && session.user.name) {
+    // データベースにuserが存在するか確認
+    const user = await getUser(session.user.email);
+    if (!user) {
+      // データベースに存在しない場合、Googleアカウントの情報から新規作成
+      const newUser = await createUser(session.user.email, session.user.name);
+      setUserId(newUser.id);
+      setIsNewUser(true);
+    } else {
+      setUserId(user.id);
     }
-  };
+  }
+};
   useEffect(() => {
     fetchUser();
   }, [session, fetchUser]);
