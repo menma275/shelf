@@ -29,6 +29,23 @@ export default function Home() {
   const [userId, setUserId] = useState<number | null>(null);
   const [isNewUser, setIsNewUser] = useState(false)
 
+  const [inputURL, setInputURL] = useState("")
+  const [chooseTag, setChooseTag] = useState("")
+  const [inputTag, setInputTag] = useState("")
+
+  const onInputURLChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setInputURL(e.target.value)
+  }
+
+  const onChooseTagChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
+    setChooseTag(e.target.value)
+  }
+
+  const onInputTagChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setInputTag(e.target.value)
+  }
+
+
   type Link = {
     id: number;
     url: string;
@@ -49,7 +66,7 @@ export default function Home() {
     authorId: number | null;
   };
 
-const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
@@ -156,8 +173,6 @@ const [tags, setTags] = useState<Tag[]>([]);
     }
   }
 
-  const inputUrlElement = document.getElementById("inputurl");
-  const inputTagElement = document.getElementById("inputtag");
   return (
     <main className="text-sm max-w-lg mx-auto px-3 flex flex-col justify-center items-center">
       <>
@@ -201,20 +216,20 @@ const [tags, setTags] = useState<Tag[]>([]);
               <Modal isOpen={isAddLinkModalOpen} setIsOpen={setIsAddLinkModalOpen} title="Add Link">
                 {/* urlとタイトル、説明、タグを追加 */}
                 <div className="flex flex-col gap-2">
-                  <input id="inputurl" type="url" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="https://example.com" />
+                  <input onChange={onInputURLChange} type="url" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="https://example.com" />
                   {/* tagsからタグを選ぶ */}
                   {selectedTag ? (
                     <>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink((inputUrlElement as HTMLInputElement).value, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputURL, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
                     </>
                   ) : (
                     <>
-                      <select id="inputtag" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none">
+                      <select className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" onChange={onChooseTagChange}>
                         {tags && tags.map((tag:any) => (
                           <option key={tag.id} value={tag.id}>{tag.name}</option>
                         ))}
                       </select>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink((inputUrlElement as HTMLInputElement).value, Number((inputTagElement as HTMLInputElement).value)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputURL, Number(chooseTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
                     </>
                   )
                   }
@@ -225,8 +240,8 @@ const [tags, setTags] = useState<Tag[]>([]);
                 <Modal isOpen={isAddTagModalOpen} setIsOpen={setIsAddTagModalOpen} title="Add Tag">
                   {/* タグを追加 */}
                   <div className="flex flex-col gap-2">
-                    <input id="addtag" type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" />
-                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc((inputTagElement as HTMLInputElement).value)}}>Add Tag</button>
+                    <input type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" onChange={onInputTagChange} />
+                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc(inputTag)}}>Add Tag</button>
                   </div>
                 </Modal>
             )}
