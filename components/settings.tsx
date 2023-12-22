@@ -84,7 +84,7 @@ export default function Settings({name}:{name: String}) {
                                 </button>
                             </div>
                         </div>
-                        <button onClick={()=>setIsModalOpen(false)} className="border-t border-[var(--border)]  flex flex-row p-3 py-2 w-full flex flex-row gap-1 items-center">
+                        <button onClick={()=>setIsModalOpen(false)} className="border-t border-[var(--border)] p-3 py-2 w-full flex flex-row gap-1 items-center">
                             <IoClose className="text-md text-[var(--font-secondary)] cursor-pointer" />
                             <span className="text-xs text-[var(--font-secondary)]">Close</span>
                         </button>

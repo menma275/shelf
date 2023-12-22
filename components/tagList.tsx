@@ -11,7 +11,7 @@ export default function TagList({userId, tags, selectedTag, setSelectedTag, isAd
                 ):(
                   <button onClick={()=>setSelectedTag(null)} className="whitespace-nowrap text-xs text-[var(--font-secondary)] px-2 py-1 rounded-lg border border-[var(--bg-primary)]">All</button>
                 )}
-                {tags && tags.map((tag) => (
+                {tags && tags.map((tag:any) => (
                   tag.id === selectedTag ?(
                   <button onClick={()=>setSelectedTag(tag.id)} key={tag.id} className=" whitespace-nowrap text-xs text-[var(--font-secondary)] bg-[var(--bg-secondary)] border border-[var(--border)] px-2 py-1 rounded-lg">{tag.name}</button>
                   ):(
