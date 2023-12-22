@@ -156,7 +156,8 @@ const [tags, setTags] = useState<Tag[]>([]);
     }
   }
 
-
+  const inputUrlElement = document.getElementById("inputurl");
+  const inputTagElement = document.getElementById("inputtag");
   return (
     <main className="text-sm max-w-lg mx-auto px-3 flex flex-col justify-center items-center">
       <>
@@ -204,7 +205,7 @@ const [tags, setTags] = useState<Tag[]>([]);
                   {/* tagsからタグを選ぶ */}
                   {selectedTag ? (
                     <>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputurl.value, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink((inputUrlElement as HTMLInputElement).value, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
                     </>
                   ) : (
                     <>
@@ -213,7 +214,7 @@ const [tags, setTags] = useState<Tag[]>([]);
                           <option key={tag.id} value={tag.id}>{tag.name}</option>
                         ))}
                       </select>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputurl.value, Number(inputtag.value)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink((inputUrlElement as HTMLInputElement).value, Number((inputTagElement as HTMLInputElement).value)), setIsAddLinkModalOpen(false)}}>Add Link</button>
                     </>
                   )
                   }
@@ -225,7 +226,7 @@ const [tags, setTags] = useState<Tag[]>([]);
                   {/* タグを追加 */}
                   <div className="flex flex-col gap-2">
                     <input id="addtag" type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" />
-                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc(addtag.value)}}>Add Tag</button>
+                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc((inputTagElement as HTMLInputElement).value)}}>Add Tag</button>
                   </div>
                 </Modal>
             )}
