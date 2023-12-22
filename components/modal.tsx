@@ -1,12 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 import { useEffect } from "react";
 
-import bgNoise from "@/public/noise.jpg";
-
-export default function Modal({isOpen, setIsOpen, title, children}:{isOpen: Boolean, setIsOpen: Function, title:String, children:JSX.Element[]}) {
+export default function Modal({isOpen, setIsOpen, title, children}:{isOpen: Boolean, setIsOpen: Function, title:String, children:JSX.Element}) {
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             const modal = document.querySelector('.modal'); // モーダルのクラス名を指定

@@ -164,7 +164,7 @@ const [tags, setTags] = useState<Tag[]>([]);
         {session ? (
           <>
             {/* タグリスト */}
-            <TagList userId={userId} tags={tags} selectedTag={selectedTag} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
+            <TagList userId={userId ?? 0} tags={tags} selectedTag={selectedTag ?? 0} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
             {isList ? (
               <LinkList links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
             ) : (
