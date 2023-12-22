@@ -54,7 +54,10 @@ export default function Home() {
   useEffect(() => {
     const keydownListener = (e:KeyboardEvent) => {
       if(e.key === "Enter"){
-        document.getElementById("addbutton").click()
+        const addButton = document.getElementById("addbutton")
+        if(addButton){
+          addButton.click()
+        }
       }
     }
     document.addEventListener("keydown", keydownListener)
