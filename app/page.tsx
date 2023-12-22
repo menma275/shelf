@@ -1,113 +1,219 @@
-import Image from 'next/image'
+"use client"
+
+import Image from "next/image";
+
+import img from "@/public/book.png";
+
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react";
+
+import { IoGridOutline, IoMenu } from "react-icons/io5";
+
+import getUser from "@/lib/getUser"
+import createUser from "@/lib/createUser";
+import getLinks from "@/lib/getLinks";
+import addLinks from "@/lib/addLinks";
+import getTags from "@/lib/getTags";
+import addTag from "@/lib/addTag";
+import changeTag from "@/lib/changeTag";
+
+import Welcome from "@/components/welcome";
+import Settings from "@/components/settings";
+import Modal from "@/components/modal";
+import TagList from "@/components/tagList";
+import LinkList from "@/components/linkList";
+import LinkCard from "@/components/linkCard";
 
 export default function Home() {
+  const {data:session} = useSession()
+  const [userId, setUserId] = useState(null)
+  const [isNewUser, setIsNewUser] = useState(false)
+
+  const [links, setLinks] = useState([])
+  const [tags, setTags] = useState([])
+
+  const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
+  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
+
+  const [selectedTag, setSelectedTag] = useState(null)
+
+  const [isList, setIsList] = useState(true)
+
+  // command + vを押した時にuseeffect
+  useEffect(() => {
+    const pasteListener = (e:ClipboardEvent) => {
+      setIsAddLinkModalOpen(true)
+    }
+    document.addEventListener("paste", pasteListener)
+    return () => {
+      document.removeEventListener("paste", pasteListener)
+    }
+  }, [])
+
+  // enterキーでaddbuttonを押す
+  useEffect(() => {
+    const keydownListener = (e:KeyboardEvent) => {
+      if(e.key === "Enter"){
+        document.getElementById("addbutton").click()
+      }
+    }
+    document.addEventListener("keydown", keydownListener)
+    return () => {
+      document.removeEventListener("keydown", keydownListener)
+    }
+  }, [])
+
+  // ユーザー情報の取得
+  const fetchUser = async () => {
+    if(session) {
+      // データベースにuserが存在するか確認
+      const user = await getUser(session.user.email)
+      if(!user){
+        // データベースに存在しない場合、Googleアカウントの情報から新規作成
+        const newUser = await createUser(session.user.email, session.user.name)
+        setUserId(newUser.id)
+        setIsNewUser(true)
+      }else{
+        setUserId(user.id)
+      }
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, [session]);
+
+  // リンク情報の取得
+  const fetchLinks = async () => {
+    if(userId){
+      const links = await getLinks(userId, selectedTag)
+      setLinks(links)
+    }
+  };
+  useEffect(() => {
+    fetchLinks();
+  }, [userId, selectedTag]);
+
+  // タグ情報の取得
+  const fetchTags = async () => {
+    if(userId){
+      const tags = await getTags(userId)
+      setTags(tags)
+    }
+  };
+  useEffect(() => {
+    fetchTags();
+  }, [userId, session]);
+
+  // タグ情報の更新
+  const changeTagFunc = async (id:number, tag:number) => {
+    if(userId){
+      await changeTag(userId, id, tag)
+    }
+  }
+
+  // タグの追加
+  const addTagFunc = async (name:string) => {
+    if(userId){
+      await addTag(userId, name)
+      await fetchTags()
+    }
+  }
+
+  const addLink = (url:string, tag:number) => {
+    try {
+      new URL(url)
+      const fetchAddLink = async () => {
+        if(userId){
+          const link = await addLinks(userId, tag, url)
+          setLinks(links => [...links, link])
+        }
+      }
+      fetchAddLink()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    <main className="text-sm max-w-lg mx-auto px-3 flex flex-col justify-center items-center">
+      <>
+        {/* ログイン */}
+        {session ? (
+          <>
+            {/* タグリスト */}
+            <TagList userId={userId} tags={tags} selectedTag={selectedTag} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
+            {isList ? (
+              <LinkList links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
+            ) : (
+              <LinkCard links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
+            )}
+            {/* インプット */}
+            <div className="fixed bottom-5 sm:bottom-16 left-1/2 -translate-x-1/2 w-full max-w-xl px-3">
+              <div className="flex flex-row gap-2 items-center">
+                <button
+                  onClick={() => setIsAddLinkModalOpen(true)}
+                  className="btn-secondary py-3 w-full focus:outline-none"
+                >
+                  Add Link
+                </button>
+                <button className="btn-secondary aspect-square rounded-full cursor-pointer" onClick={()=>{setIsList(!isList)}}>
+                  {isList ? <IoMenu /> :<IoGridOutline />}
+                </button>
+              </div>
+            </div>
+            <Settings name={session?.user?.name ?? "guest"} />
+            <Modal isOpen={isNewUser} setIsOpen={setIsNewUser} title="Welcome to 📚Shelf">
+                <div className="flex flex-row items-center">
+                  <div className="flex justify-start">
+                    <Image className="w-3/4" src={img}  alt="desk" />
+                  </div>
+                  <div className="flex flex-col justify-start text-sm gap-2">
+                      <p>You are sign in as </p>
+                      <p className="whitespace-nowrap font-mono text-xs px-2 py-1 bg-[var(--bg-primary)] rounded-lg border border-[var(--border)] w-fit">{session?.user?.name ?? "guest"}</p>
+                  </div>
+                </div>
+            </Modal>
+            {isAddLinkModalOpen && (
+              <Modal isOpen={isAddLinkModalOpen} setIsOpen={setIsAddLinkModalOpen} title="Add Link">
+                {/* urlとタイトル、説明、タグを追加 */}
+                <div className="flex flex-col gap-2">
+                  <input id="inputurl" type="url" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="https://example.com" />
+                  {/* tagsからタグを選ぶ */}
+                  {selectedTag ? (
+                    <>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputurl.value, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                    </>
+                  ) : (
+                    <>
+                      <select id="inputtag" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none">
+                        {tags && tags.map((tag:any) => (
+                          <option key={tag.id} value={tag.id}>{tag.name}</option>
+                        ))}
+                      </select>
+                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputurl.value, Number(inputtag.value)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                    </>
+                  )
+                  }
+                </div>
+              </Modal>
+            )}
+            {isAddTagModalOpen && (
+                <Modal isOpen={isAddTagModalOpen} setIsOpen={setIsAddTagModalOpen} title="Add Tag">
+                  {/* タグを追加 */}
+                  <div className="flex flex-col gap-2">
+                    <input id="addtag" type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" />
+                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc(addtag.value)}}>Add Tag</button>
+                  </div>
+                </Modal>
+            )}
+          </>
+        ) : (
+          <>
+            <Welcome /> 
+          </>
+        )}
+      </>
     </main>
   )
 }

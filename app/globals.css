@@ -3,25 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --font-primary: #171717;
+  --font-secondary: #8f8f8f;
+  --bg-primary:#fff;
+  --bg-secondary: #fafafa;
+  --border: #efefef;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --font-primary: #fff;
+    --bg-primary:#161616;
+    --bg-secondary: #252525;
+    --border: #353535;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--font-primary);
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--bg-primary)];
+  }
+  .btn-secondary {
+    @apply px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--bg-secondary)];
+  }
+  .btn-accent {
+    @apply text-[var(--bg-primary)] px-3 py-1 bg-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--font-secondary)];
+  }
 }
