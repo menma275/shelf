@@ -80,7 +80,7 @@ export default function Home() {
   };
   useEffect(() => {
     fetchUser();
-  }, [session]);
+  }, [session, fetchUser]);
 
   // リンク情報の取得
   const fetchLinks = async () => {
@@ -91,7 +91,7 @@ export default function Home() {
   };
   useEffect(() => {
     fetchLinks();
-  }, [userId, selectedTag]);
+  }, [userId, selectedTag, fetchLinks]);
 
   // タグ情報の取得
   const fetchTags = async () => {

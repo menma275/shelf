@@ -25,7 +25,7 @@ export default function Modal({isOpen, setIsOpen, title, children}:{isOpen: Bool
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
-    }, [isOpen]);
+    }, [isOpen, setIsOpen]);
 
     return (
         <>
