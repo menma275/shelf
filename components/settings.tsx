@@ -11,7 +11,7 @@ import img from "@/public/piece.png";
 
 import Modal from "./modal";
 
-export default function Settings({name}:{name: String}) {
+export default function Settings({name, id}:{name: String, id: Number}) {
 
     const commands = [
         {
@@ -78,7 +78,8 @@ export default function Settings({name}:{name: String}) {
                         <div className="border-t border-[var(--border)] p-3 flex flex-col">
                             <p className="text-xs mb-1 text-[var(--font-secondary)]">Account</p>
                             <div className="text-xs flex flex-col items-start gap-3">
-                                {name}
+                                <p>{name}</p>
+                                <p>{id.toString()}</p>
                                 <button className="btn-primary w-full" onClick={() => signOut()}>
                                     Sign out
                                 </button>

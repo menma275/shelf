@@ -175,13 +175,13 @@ export default function Home() {
         {/* ログイン */}
         {session ? (
           <>
-            {/* タグリスト */}
-            <TagList userId={userId ?? 0} tags={tags} selectedTag={selectedTag ?? 0} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
             {isList ? (
               <LinkList links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
             ) : (
               <LinkCard links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
             )}
+            {/* タグリスト */}
+            <TagList userId={userId ?? 0} tags={tags} selectedTag={selectedTag ?? 0} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
             {/* インプット */}
             <div className="fixed bottom-5 sm:bottom-16 left-1/2 -translate-x-1/2 w-full max-w-xl px-3">
               <div className="flex flex-row gap-2 items-center">
@@ -196,7 +196,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            <Settings name={session?.user?.name ?? "guest"} />
+            <Settings name={session?.user?.name ?? "guest"} id={userId ?? 0} />
             <Modal isOpen={isNewUser} setIsOpen={setIsNewUser} title="Welcome to 📚Shelf">
                 <div className="flex flex-row items-center">
                   <div className="flex justify-start">
