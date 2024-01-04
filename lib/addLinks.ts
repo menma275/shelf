@@ -3,7 +3,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const apiKey = process.env.JSON_LINK_API_KEY;
+const apiKey = process.env.NEXT_PUBLIC_JSON_LINK_API_KEY;
 
 const getMetaDetails = async (url:string) => {
     const apiUrl = `https://jsonlink.io/api/extract?url=${url}&api_key=${apiKey}`;
