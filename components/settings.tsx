@@ -72,14 +72,14 @@ export default function Settings({name}:{name: String}) {
                         {/* how to use */}
                         <div className="border-t border-[var(--border)] p-3">
                             <p className="text-xs mb-2 text-[var(--font-secondary)]">How to use</p>
-                            <button onClick={()=>{setIsHowToUseOpen(!isHowToUseOpen), setIsModalOpen(!isModalOpen)}} className="btn-secondary text-xs w-full">Open Details</button>
+                            <button onClick={()=>{setIsHowToUseOpen(!isHowToUseOpen), setIsModalOpen(!isModalOpen)}} className="btn-primary text-xs w-full">Open Details</button>
                         </div>
                         {/* account */}
                         <div className="border-t border-[var(--border)] p-3 flex flex-col">
                             <p className="text-xs mb-1 text-[var(--font-secondary)]">Account</p>
                             <div className="text-xs flex flex-col items-start gap-3">
                                 {name}
-                                <button className="btn-secondary w-full" onClick={() => signOut()}>
+                                <button className="btn-primary w-full" onClick={() => signOut()}>
                                     Sign out
                                 </button>
                             </div>
@@ -113,9 +113,12 @@ export default function Settings({name}:{name: String}) {
                         </div>
                         <p className="mt-5">🤟 Enjoy !</p>
                     </div>
-                    <div className="flex flex-row justify-between items-end w-3/5">
+                    <div className="absolute bottom-2 right-2 w-2/5">
                         <Image src={img}  alt="desk" />
                     </div>
+                    {/* <div className="flex flex-row justify-between items-end w-3/5">
+                        <Image src={img}  alt="desk" />
+                    </div> */}
                 </div>
             </Modal>
         </>

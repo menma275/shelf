@@ -82,7 +82,7 @@ export default function LinkCard({links, tags, fetchLinks, changeTagFunc}:{links
                 <div className="flex flex-col gap-2">
                     {tags && tags.map((tag:any) => {
                         return(
-                            <button key={tag.id} onClick={()=>changeTag(id ?? 0, tag.id)} className="btn-secondary">{tag.name}</button>
+                            <button key={tag.id} onClick={()=>changeTag(id ?? 0, tag.id)} className="btn-primary">{tag.name}</button>
                         )
                     })}
                 </div>

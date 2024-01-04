@@ -5,6 +5,10 @@
 :root {
   --font-primary: #171717;
   --font-secondary: #8f8f8f;
+  /* --accent: #8a4fff; */
+  /* --accent-light: #c7baff; */
+  --accent: #f55535;
+  --accent-light: #ffbf9f;
   --bg-primary:#fff;
   --bg-secondary: #fafafa;
   --border: #efefef;
@@ -30,12 +34,6 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--bg-primary)];
-  }
-  .btn-secondary {
-    @apply px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--bg-secondary)];
-  }
-  .btn-accent {
-    @apply text-[var(--bg-primary)] px-3 py-1 bg-[var(--font-primary)] rounded-full duration-300 transition-all hover:bg-[var(--font-secondary)];
+    @apply px-3 py-1 bg-[var(--accent)] text-white rounded-lg duration-75 transition-all shadow-my active:shadow-none active:translate-y-[0.25rem];
   }
 }

@@ -13,7 +13,7 @@ export default function Welcome() {
                 <div className="flex flex-row">
                     <div className="flex flex-col justify-between gap-5">
                         <p className="text-md">Shelf is a place to save and share your favorite links.</p>
-                        <button className="btn-accent w-fit" onClick={() => signIn()}>Sign in with Google</button>
+                        <button className="btn-primary w-fit" onClick={() => signIn()}>Sign in with Google</button>
                     </div>
                     <div className="flex justify-end">
                         <Image className="w-full" src={img}  alt="desk" />

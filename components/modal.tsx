@@ -29,11 +29,11 @@ export default function Modal({isOpen, setIsOpen, title, children}:{isOpen: Bool
         {isOpen && (
         <div className="fixed top-1/2 -translate-y-1/2 w-full h-full px-3 backdrop-blur-[2px]">
             <div className="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-3 overflow-hidden">
-                <div className="rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)]">
+                <div className="rounded-lg bg-[var(--bg-secondary)] border-4 border-[var(--border)] bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)]">
                     <div className="p-5">
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-row justify-between items-center">
-                                <h1 className="text-[var(--font-secondary)]">{title}</h1>
+                                <h1 className="text-[var(--accent)] font-bold">{title}</h1>
                                 <button>
                                     <IoClose onClick={()=>setIsOpen(!isOpen)} className="text-lg text-[var(--font-secondary)] cursor-pointer" />
                                 </button>

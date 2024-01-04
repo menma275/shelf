@@ -32,6 +32,11 @@ export default function Home() {
   const [inputURL, setInputURL] = useState("")
   const [chooseTag, setChooseTag] = useState("")
   const [inputTag, setInputTag] = useState("")
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
+  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState(null)
+  const [isList, setIsList] = useState(true)
 
   const onInputURLChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setInputURL(e.target.value)
@@ -65,15 +70,6 @@ export default function Home() {
     updatedAt: Date;
     authorId: number | null;
   };
-
-  const [tags, setTags] = useState<Tag[]>([]);
-
-  const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
-  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
-
-  const [selectedTag, setSelectedTag] = useState(null)
-
-  const [isList, setIsList] = useState(true)
 
   // command + vを押した時にuseeffect
   useEffect(() => {
@@ -191,11 +187,11 @@ export default function Home() {
               <div className="flex flex-row gap-2 items-center">
                 <button
                   onClick={() => setIsAddLinkModalOpen(true)}
-                  className="btn-secondary py-3 w-full focus:outline-none"
+                  className="btn-primary py-3 w-full focus:outline-none"
                 >
                   Add Link
                 </button>
-                <button className="btn-secondary aspect-square rounded-full cursor-pointer" onClick={()=>{setIsList(!isList)}}>
+                <button className="btn-primary shadow-none aspect-square rounded-full cursor-pointer" onClick={()=>{setIsList(!isList)}}>
                   {isList ? <IoMenu /> :<IoGridOutline />}
                 </button>
               </div>
@@ -212,39 +208,37 @@ export default function Home() {
                   </div>
                 </div>
             </Modal>
-            {isAddLinkModalOpen && (
-              <Modal isOpen={isAddLinkModalOpen} setIsOpen={setIsAddLinkModalOpen} title="Add Link">
-                {/* urlとタイトル、説明、タグを追加 */}
-                <div className="flex flex-col gap-2">
-                  <input onChange={onInputURLChange} type="url" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="https://example.com" />
-                  {/* tagsからタグを選ぶ */}
-                  {selectedTag ? (
-                    <>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputURL, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
-                    </>
-                  ) : (
-                    <>
-                      <select className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" onChange={onChooseTagChange}>
-                        {tags && tags.map((tag:any) => (
-                          <option key={tag.id} value={tag.id}>{tag.name}</option>
-                        ))}
-                      </select>
-                      <button id="addbutton" className="btn-accent" onClick={()=>{addLink(inputURL, Number(chooseTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
-                    </>
-                  )
-                  }
-                </div>
-              </Modal>
-            )}
-            {isAddTagModalOpen && (
-                <Modal isOpen={isAddTagModalOpen} setIsOpen={setIsAddTagModalOpen} title="Add Tag">
-                  {/* タグを追加 */}
-                  <div className="flex flex-col gap-2">
-                    <input type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" onChange={onInputTagChange} />
-                    <button className="btn-accent" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc(inputTag)}}>Add Tag</button>
-                  </div>
-                </Modal>
-            )}
+            <Modal isOpen={isAddLinkModalOpen} setIsOpen={setIsAddLinkModalOpen} title="Add Link">
+              {/* urlとタイトル、説明、タグを追加 */}
+              <div className="flex flex-col gap-2">
+                <input onChange={onInputURLChange} type="url" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="https://example.com" />
+                {/* tagsからタグを選ぶ */}
+                {selectedTag ? (
+                  <>
+                    {/* 各タグページにいるときはそのタグに追加 */}
+                    <button id="addbutton" className="btn-primary py-2 mt-3" onClick={()=>{addLink(inputURL, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link to {selectedTag}</button>
+                  </>
+                ) : (
+                  <>
+                    {/* ALLタグを選択時はタグを選ぶ */}
+                    <select className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" onChange={onChooseTagChange}>
+                      {tags && tags.map((tag:any) => (
+                        <option key={tag.id} value={tag.id}>{tag.name}</option>
+                      ))}
+                    </select>
+                    <button id="addbutton" className="btn-primary py-2 mt-3" onClick={()=>{addLink(inputURL, Number(chooseTag)), setIsAddLinkModalOpen(false)}}>Add Link</button>
+                  </>
+                )
+                }
+              </div>
+            </Modal>
+            <Modal isOpen={isAddTagModalOpen} setIsOpen={setIsAddTagModalOpen} title="Add Tag">
+              {/* タグを追加 */}
+              <div className="flex flex-col gap-2">
+                <input type="text" className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--font-secondary)] px-3 py-2 focus:outline-none" autoFocus={true} placeholder="Tag Name" onChange={onInputTagChange} />
+                <button className="btn-primary py-2 mt-3" onClick={()=>{setIsAddTagModalOpen(false), addTagFunc(inputTag)}}>Add Tag</button>
+              </div>
+            </Modal>
           </>
         ) : (
           <>
