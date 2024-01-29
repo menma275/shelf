@@ -18,10 +18,10 @@ export default function Settings({name, id}:{name: String, id: Number}) {
             key:"V",
             name:"Add Link"
         }, 
-        {
-            key:"F",
-            name:"Search Link"
-        },
+        // {
+        //     key:"F",
+        //     name:"Search Link"
+        // },
     ]
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
@@ -79,7 +79,7 @@ export default function Settings({name, id}:{name: String, id: Number}) {
                             <p className="text-xs mb-1 text-[var(--font-secondary)]">Account</p>
                             <div className="text-xs flex flex-col items-start gap-3">
                                 <p>{name}</p>
-                                <p>{id.toString()}</p>
+                                {/* <p>{id.toString()}</p> */}
                                 <button className="btn-primary w-full" onClick={() => signOut()}>
                                     Sign out
                                 </button>
@@ -108,10 +108,10 @@ export default function Settings({name, id}:{name: String, id: Number}) {
                             <FiCommand/>
                             <p>V to save the Link.</p>
                         </div>
-                        <div className="flex items-center">
+                        {/* <div className="flex items-center">
                             <FiCommand/>
                             <p>F to search the Link.</p>
-                        </div>
+                        </div> */}
                         <p className="mt-5">🤟 Enjoy !</p>
                     </div>
                     <div className="absolute bottom-2 right-2 w-2/5">

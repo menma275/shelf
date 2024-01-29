@@ -10,7 +10,7 @@ import Modal from "@/components/modal";
 import { useState } from "react";
 import {Oval} from "react-loader-spinner";
 
-export default function LinkList({links, tags, fetchLinks, changeTagFunc}:{links:any, tags:any, fetchLinks:Function, changeTagFunc:Function}) {
+export default function LinkList({links, selectedTag, tags, fetchLinks, changeTagFunc}:{links:any, selectedTag:number, tags:any, fetchLinks:Function, changeTagFunc:Function}) {
 
     const [isChangeTagModalOpen, setIsChangeTagModalOpen] = useState(false)
     const [id, setId] = useState(null)
@@ -19,12 +19,13 @@ export default function LinkList({links, tags, fetchLinks, changeTagFunc}:{links
     const deleteLink = async (id:number) => {
         await deleteLinks(id)
         await fetchLinks()
+        setIsChangeTagModalOpen(false)
     }
 
-    const changeTag = async (id:number, tagId:number) => {
+    const changeTag = async (id:number, tagId:number, selectedTag:number) => {
         try{
             setIsLoading(true)
-            await changeTagFunc(id, tagId)
+            await changeTagFunc(id, tagId, selectedTag??0)
             await fetchLinks()
         }catch(e){
             console.log(e)
@@ -73,22 +74,18 @@ export default function LinkList({links, tags, fetchLinks, changeTagFunc}:{links
                         )}
                     </div>
                     )}
-                    {inverselinks.length === 0 && (
-                        <div className="-z-50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full">
-                        <div className="cursor-default h-full flex flex-col items-center justify-center">
-                            <p className="font-serif text-lg text-[var(--font-secondary)]">No links yet.</p>
-                            <Image className="w-1/2 max-w-[200px]" src={img}  alt="empty" />
-                        </div>
-                    </div>
-                    )}
                 </>
             )}
             <Modal isOpen={isChangeTagModalOpen} setIsOpen={setIsChangeTagModalOpen} title="Change Tag">
                 {/* tagsの選択肢を表示 */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap gap-2">
                     {tags && tags.map((tag:any) => {
                         return(
-                            <button key={tag.id} onClick={()=>changeTag(id ?? 0, tag.id)} className="btn-primary">{tag.name}</button>
+                        tag.id === selectedTag ?(
+                            <button key={tag.id} disabled  className="bg-[var(--bg-primary)] text-xs px-3 py-1 border-2 border-[var(--bg-secondary)] rounded-full text-[var(--font-secondary)]">{tag.name}</button>
+                        ):(
+                            <button key={tag.id} onClick={()=>changeTag(id ?? 0, tag.id, selectedTag)} className="bg-[var(--bg-primary)] text-xs px-3 py-1 border-2 border-[var(--border)] rounded-full hover:border-[var(--accent-light)]">{tag.name}</button>
+                        )
                         )
                     })}
                 </div>

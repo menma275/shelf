@@ -3,9 +3,12 @@
 import Image from "next/image";
 
 import img from "@/public/book.png";
+import noLinks from "@/public/empty.png";
 
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react";
+
+import {Oval} from "react-loader-spinner"
 
 import { IoGridOutline, IoMenu } from "react-icons/io5";
 
@@ -16,6 +19,7 @@ import addLinks from "@/lib/addLinks";
 import getTags from "@/lib/getTags";
 import addTag from "@/lib/addTag";
 import changeTag from "@/lib/changeTag";
+import deleteTag from "@/lib/deleteTag";
 
 import Welcome from "@/components/welcome";
 import Settings from "@/components/settings";
@@ -23,6 +27,7 @@ import Modal from "@/components/modal";
 import TagList from "@/components/tagList";
 import LinkList from "@/components/linkList";
 import LinkCard from "@/components/linkCard";
+import { isPageStatic } from "next/dist/build/utils";
 
 export default function Home() {
   const {data:session} = useSession()
@@ -32,11 +37,14 @@ export default function Home() {
   const [inputURL, setInputURL] = useState("")
   const [chooseTag, setChooseTag] = useState("")
   const [inputTag, setInputTag] = useState("")
+  const [erasedTag, setErasedTag] = useState(0)
   const [tags, setTags] = useState<Tag[]>([]);
   const [isAddTagModalOpen, setIsAddTagModalOpen] = useState(false)
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false)
-  const [selectedTag, setSelectedTag] = useState(null)
+  const [selectedTag, setSelectedTag] = useState(0)
+  const [selectedTagName, setSelectedTagName] = useState("All" as string | null)
   const [isList, setIsList] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const onInputURLChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setInputURL(e.target.value)
@@ -120,13 +128,26 @@ export default function Home() {
   // リンク情報の取得
   const fetchLinks = async () => {
     if(userId){
+      setIsLoading(true)
       const links = await getLinks(userId, selectedTag)
       setLinks(links)
+      setIsLoading(false)
     }
   };
+
   useEffect(() => {
     fetchLinks();
-  }, [userId, selectedTag, fetchLinks]);
+  }, [userId, selectedTag]);
+
+  useEffect(() => {
+    if(selectedTag){
+      const tag = tags.find((tag:any) => tag.id === Number(selectedTag))
+      setSelectedTagName(tag.name)
+    }else{
+      setSelectedTagName("All")
+    }
+  }
+  , [selectedTag, tags])
 
   // タグ情報の取得
   const fetchTags = async () => {
@@ -140,17 +161,25 @@ export default function Home() {
   }, [userId, session]);
 
   // タグ情報の更新
-  const changeTagFunc = async (id:number, tag:number) => {
+  const changeTagFunc = async (id:number, tag:number, currentTag:number) => {
     if(userId){
-      await changeTag(userId, id, tag)
+      await changeTag(userId, id, tag, currentTag)
     }
   }
 
   // タグの追加
   const addTagFunc = async (name:string) => {
-    if(userId){
+    if(userId && name!==""){
       await addTag(userId, name)
       await fetchTags()
+    }
+  }
+
+  const deleteTagFunc = async (tag:number) => {
+    if(userId){
+      await deleteTag(tag)
+      await fetchTags()
+      await setSelectedTag(0)
     }
   }
 
@@ -175,13 +204,36 @@ export default function Home() {
         {/* ログイン */}
         {session ? (
           <>
-            {isList ? (
-              <LinkList links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
-            ) : (
-              <LinkCard links={links} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
-            )}
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-screen">
+              <Oval color="var(--font-primary)" secondaryColor="var(--font-secondary)" height={50} width={50} />
+              <p className="text-[var(--font-secondary)]">Loading...</p>
+            </div>
+          ):(
+            links.length !== 0 ? (
+              isList ? (
+                <LinkList links={links} selectedTag={selectedTag} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
+              ) : (
+                <LinkCard links={links} selectedTag={selectedTag} tags={tags} fetchLinks={fetchLinks} changeTagFunc={changeTagFunc} />
+              )
+            ):(
+              <div className="-z-50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full">
+                <div className="cursor-default h-full flex flex-col items-center justify-center">
+                    <p className="font-serif text-lg text-[var(--font-secondary)]">No links yet.</p>
+                    <Image className="w-1/2 max-w-[200px]" src={noLinks}  alt="empty" />
+                    {/* ボタン */}
+                    <button
+                      onClick={() => deleteTagFunc(selectedTag)}
+                      className="text-[var(--font-secondary)] bg-[var(--bg-secondary)] px-3 py-1 rounded-md"
+                    >
+                      Delete This Tag ?
+                    </button>
+                </div>
+              </div>
+            )
+          )}
             {/* タグリスト */}
-            <TagList userId={userId ?? 0} tags={tags} selectedTag={selectedTag ?? 0} setSelectedTag={setSelectedTag} isAddTagModalOpen={isAddTagModalOpen} setIsAddTagModalOpen={setIsAddTagModalOpen}/>
+            <TagList tags={tags} selectedTag={selectedTag ?? 0} setSelectedTag={setSelectedTag} setIsAddTagModalOpen={setIsAddTagModalOpen} />
             {/* インプット */}
             <div className="fixed bottom-5 sm:bottom-16 left-1/2 -translate-x-1/2 w-full max-w-xl px-3">
               <div className="flex flex-row gap-2 items-center">
@@ -216,7 +268,7 @@ export default function Home() {
                 {selectedTag ? (
                   <>
                     {/* 各タグページにいるときはそのタグに追加 */}
-                    <button id="addbutton" className="btn-primary py-2 mt-3" onClick={()=>{addLink(inputURL, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link to {selectedTag}</button>
+                    <button id="addbutton" className="btn-primary py-2 mt-3" onClick={()=>{addLink(inputURL, Number(selectedTag)), setIsAddLinkModalOpen(false)}}>Add Link to {selectedTagName}</button>
                   </>
                 ) : (
                   <>

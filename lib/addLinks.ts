@@ -29,12 +29,13 @@ async function removeInvalidHexEscape(str:string) {
     const escape = escapeString(replace);
     if(escape === null) return "Not Valid Title";
     return escape;
+    // return replace;
 }
 
-function cutString(str:string, isCut:boolean = false) {
-    if(str.length > 300){
+function cutString(str:string, cutLength:number = 100, isCut:boolean = true) {
+    if(str.length > cutLength){
         if(isCut)
-            return str.slice(0, 300);
+            return str.slice(0, cutLength);
         else
             return "";
     }else
@@ -45,10 +46,10 @@ export default async function addLinks(userId:number, tag:number, url:string) {
     const data = await getMetaDetails(url);
     console.log(data);
 
-    const title = cutString(await removeInvalidHexEscape(data.title ?? ''));
-    const description = cutString(await removeInvalidHexEscape(data.description ?? ""));
+    const title = cutString(await removeInvalidHexEscape(data.title ?? ''), 100);
+    const description = cutString(await removeInvalidHexEscape(data.description ?? ""), 100);
     const favicon = cutString(data.favicon ?? "");
-    const img = cutString(data.images[0] ?? "");
+    const img = cutString(data.images[0] ?? "", 300, false);
 
     const links = await prisma.post.create({
         data: {

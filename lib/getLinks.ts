@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function getLinks(id: number | null, tag:number | null) {
-    if(tag===null){
+    if(tag===null || tag===0){
         const links = await prisma.post.findMany({
             where: {
                 authorId: id,
