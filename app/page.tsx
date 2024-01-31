@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   const onChooseTagChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
-    setChooseTag(e.target.value)
+    setChooseTag(Number(e.target.value))
   }
 
   const onInputTagChange = (e:React.ChangeEvent<HTMLInputElement>) => {
