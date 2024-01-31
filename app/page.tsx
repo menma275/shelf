@@ -142,7 +142,8 @@ export default function Home() {
   useEffect(() => {
     if(selectedTag){
       const tag = tags.find((tag:any) => tag.id === Number(selectedTag))
-      setSelectedTagName(tag.name)
+      if(tag && tag.name)
+        setSelectedTagName(tag.name)
     }else{
       setSelectedTagName("All")
     }
