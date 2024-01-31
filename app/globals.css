@@ -14,14 +14,14 @@
   --border: #efefef;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --font-primary: #fff;
     --bg-primary:#161616;
     --bg-secondary: #252525;
     --border: #353535;
   }
-}
+} */
 
 body {
   color: var(--font-primary);
