@@ -241,9 +241,15 @@ export default function Home() {
               <div className="flex flex-row gap-2 items-center">
                 <button
                   onClick={() => setIsAddLinkModalOpen(true)}
-                  className="btn-primary py-3 w-full focus:outline-none"
+                  className="btn-primary py-3 w-full focus:outline-none disabled:bg-[var(--accent-light)]"
+                  disabled={tags.length === 0}
                 >
-                  Add Link
+                  {tags.length === 0 ? (
+                    <>Please Add Tag First.</>
+                  ):(
+                    <>Add Link</>
+                  )
+                }
                 </button>
                 <button className="btn-primary shadow-none aspect-square rounded-full cursor-pointer" onClick={()=>{setIsList(!isList)}}>
                   {isList ? <IoMenu /> :<IoGridOutline />}
