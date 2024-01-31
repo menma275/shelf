@@ -35,7 +35,7 @@ export default function Home() {
   const [isNewUser, setIsNewUser] = useState(false)
 
   const [inputURL, setInputURL] = useState("")
-  const [chooseTag, setChooseTag] = useState("")
+  const [chooseTag, setChooseTag] = useState(1)
   const [inputTag, setInputTag] = useState("")
   const [erasedTag, setErasedTag] = useState(0)
   const [tags, setTags] = useState<Tag[]>([]);
@@ -222,13 +222,14 @@ export default function Home() {
                 <div className="cursor-default h-full flex flex-col items-center justify-center">
                     <p className="font-serif text-lg text-[var(--font-secondary)]">No links yet.</p>
                     <Image className="w-1/2 max-w-[200px]" src={noLinks}  alt="empty" />
-                    {/* ボタン */}
-                    <button
-                      onClick={() => deleteTagFunc(selectedTag)}
-                      className="text-[var(--font-secondary)] bg-[var(--bg-secondary)] px-3 py-1 rounded-md"
-                    >
-                      Delete This Tag ?
-                    </button>
+                    {(selectedTag !== 0) && (
+                      <button
+                        onClick={() => deleteTagFunc(selectedTag)}
+                        className="text-[var(--font-secondary)] bg-[var(--bg-secondary)] px-3 py-1 rounded-md"
+                      >
+                        Delete This Tag ?
+                      </button>
+                    )}
                 </div>
               </div>
             )

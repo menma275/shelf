@@ -8,9 +8,9 @@ export default function TagList({tags, selectedTag, setSelectedTag, setIsAddTagM
             <div className="flex flex-row justify-start px-5 py-2 gap-2 overflow-x-auto bg-[var(--bg-primary)] border border-[var(--border)] rounded-full">
               {/* 全てを表示 */}
               {selectedTag === 0 ? (
-              <button onClick={()=>setSelectedTag(null)} className="whitespace-nowrap text-xs text-[var(--bg-primary)] bg-[var(--font-primary)] border border-[var(--border)] px-2 py-1 rounded-lg">All</button>
+              <button onClick={()=>setSelectedTag(0)} className="whitespace-nowrap text-xs text-[var(--bg-primary)] bg-[var(--font-primary)] border border-[var(--border)] px-2 py-1 rounded-lg">All</button>
               ):(
-              <button onClick={()=>setSelectedTag(null)} className="whitespace-nowrap text-xs text-[var(--font-secondary)] border border-[var(--bg-primary)] px-2 py-1 rounded-lg hover:bg-[var(--bg-secondary)] duration-100">All</button>
+              <button onClick={()=>setSelectedTag(0)} className="whitespace-nowrap text-xs text-[var(--font-secondary)] border border-[var(--bg-primary)] px-2 py-1 rounded-lg hover:bg-[var(--bg-secondary)] duration-100">All</button>
               )}
               {/* 制作済みのタグ */}
               {tags && tags.map((tag:any) => (
